@@ -1,3 +1,6 @@
+<!-- This is the php file for the index page or maing front page when accessing the WP website -->
+
+<!--Adds in the header from the header.php -->
 <?php get_header(); ?>
 
   <div class="page-banner">
@@ -104,6 +107,7 @@
       </div>
     </div>
 
+    <!-- Adds in the footer from the footer.php -->
   <?php get_footer();
 
 ?>

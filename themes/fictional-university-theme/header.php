@@ -1,3 +1,5 @@
+<!-- This is the php file that is used for the header, such as the about us, links, etc-->
+
 <!DOCTYPE html>
 <html>
   <head>
