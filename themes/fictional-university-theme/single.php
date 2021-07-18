@@ -1,14 +1,14 @@
-<?php 
+<?php
+  
+  get_header();
 
- get_header(); 
+  while(have_posts()) {
+    the_post(); ?>
+    <h2><?php the_title(); ?></h2>
+    <?php the_content(); ?>
+    
+  <?php }
 
-    while (have_posts()) {
-        the_post(); ?>
-        <h1>Single.php</h1>
-        <h2><?php the_title(); ?></h2>
-        <?php the_content(); ?>
-        <?php
-    }
+  get_footer();
 
-get_footer();
 ?>
