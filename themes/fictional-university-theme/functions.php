@@ -31,3 +31,31 @@ function university_features() {
     add_theme_support('title-tag');
 }
 add_action('after_setup_theme', 'university_features');
+
+//This will only affect the event website checking to make sure it doesn't touch the admin site, and only the event archives page
+//Note that most of the keys and values are taken from the front-page.php homepageevents section
+function university_adjust_queries($query) {
+  if (!is_admin() AND is_post_type_archive('event') AND $query->is_main_query()) {
+    $today = date('Ymd');
+    $query->set('meta_key', 'event_date');
+    $query->set('orderby', 'meta_value_num');
+    $query->set('order', 'ASC');
+    $query->set('meta_query', array(
+      array(
+        'key' => 'event_date',
+        'compare' => '>=',
+        'value' => $today,
+        'type' => 'numeric'
+      )
+    ));
+  }
+}
+
+add_action('pre_get_posts', 'university_adjust_queries');
+
+// This below is too powerful and will also affect the admin website.
+// function university_adjust_queries($query) {
+//   $query->set('posts_per_page', '1');
+// }
+
+// add_action('pre_get_posts', 'university_adjust_queries');
