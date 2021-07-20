@@ -7,18 +7,13 @@
   //While loop that checks WP to see if there are any pages that are published
   while(have_posts()) {
       // The content of the post itself
-    the_post(); ?> <!-- Note that the php isn't closed until after we enter the while loop, since we want to loop
+    the_post(); 
+    pageBanner(array(
+      'title' => 'Hello there this is the title',
+      'subtitle' => 'Hi this is the subtitle'
+    ));
+    ?> <!-- Note that the php isn't closed until after we enter the while loop, since we want to loop
     through the entire posts and just before the html tag -->
-    
-    <div class="page-banner">
-      <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/ocean.jpg') ?>"></div>
-      <div class="page-banner__content container container--narrow">
-        <h1 class="page-banner__title"><?php the_title(); ?></h1>
-        <div class="page-banner__intro">
-          <p>DONT FORGET TO WEPLACE MEEEE REEEEEEEEEEE</p>
-        </div>
-      </div>
-    </div>
 
     <div class="container container--narrow page-section">
 

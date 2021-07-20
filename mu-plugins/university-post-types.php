@@ -2,6 +2,7 @@
     //Used to make custom changes to the event type posts. Make sure to go to admin page -> settings/peramlinks and click save changes after
     // making any changes below
     function university_post_types() {
+        //event post type
         register_post_type('event', array(
             'show_in_rest' => true,
             'supports' => array('title', 'editor', 'excerpt'),
@@ -17,6 +18,40 @@
                 'singular_name' => 'Event'
             ),
             'menu_icon' => 'dashicons-calendar'
+        ));
+
+        //program post type
+        register_post_type('program', array(
+            'show_in_rest' => true,
+            'supports' => array('title', 'editor'),
+            'rewrite' => array('slug' => 'programs'),
+            'has_archive' => true,
+            'public' => true,
+            'show_in_rest' => true,
+            'labels' => array(
+                'name' => 'Program',
+                'add_new_item' => 'Add New Program',
+                'edit_item' => 'Edit Program',
+                'all_items' => 'All Programs',
+                'singular_name' => 'Program'
+            ),
+            'menu_icon' => 'dashicons-awards'
+        ));
+
+        //professor post type
+        register_post_type('professor', array(
+            'show_in_rest' => true,
+            'supports' => array('title', 'editor', 'thumbnail'),
+            'public' => true,
+            'show_in_rest' => true,
+            'labels' => array(
+                'name' => 'Professor',
+                'add_new_item' => 'Add New Professor',
+                'edit_item' => 'Edit Professor',
+                'all_items' => 'All Professors',
+                'singular_name' => 'Professor'
+            ),
+            'menu_icon' => 'dashicons-welcome-learn-more'
         ));
     }
 

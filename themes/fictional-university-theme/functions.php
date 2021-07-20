@@ -1,5 +1,41 @@
 <?php
 
+//function pageBanner takes in a argument $args but the default is null if nothing is entered
+// The function reduce the need for duplication and also provides a default fallback if no title,subtitle and photo is entered
+//
+function pageBanner($args = NULL) {
+  // php logic will live here
+  //if there isn't a title then the title will be taken from the post original admin title
+  if (!$args['title']) {
+    $args['title'] = get_the_title();
+  }
+ 
+  if (!$args['subtitle']) {
+    $args['subtitle'] = get_field('page_banner_subtitle');
+  }
+ 
+  if (!$args['photo']) {
+    if (get_field('page_banner_background_image') AND !is_archive() AND !is_home() ) {
+      $args['photo'] = get_field('page_banner_background_image')['sizes']['pageBanner'];
+    } else {
+      $args['photo'] = get_theme_file_uri('/images/ocean.jpg');
+    }
+  }
+  ?>
+  
+  <div class="page-banner">
+      <div class="page-banner__bg-image" style="background-image: url(<?php echo $args['photo']; ?>);">
+    </div>
+      <div class="page-banner__content container container--narrow">
+        <h1 class="page-banner__title"><?php echo $args['title'] ?></h1>
+        <div class="page-banner__intro">
+          <p><?php echo $args['subtitle']; ?></p>
+        </div>
+      </div>
+    </div>
+    <?php 
+}
+
 //function university files that contain the images, css, styles and other cdn 
 function university_files() {
     // Enqueue (add an item of data to a queue of itesms awaiting processing) a bunch of scripts
@@ -29,12 +65,24 @@ function university_features() {
     register_nav_menu('footerLocationOne', 'Footer Location One');
     register_nav_menu('footerLocationTwo', 'Footer Location Two');
     add_theme_support('title-tag');
+    add_theme_support('post-thumbnails');
+    //Note these images below are custom variables used to resize an image
+    add_image_size('professorLandscape', 400, 260, true);
+    add_image_size('professorPortrait', 480, 650, true);
+    add_image_size('pageBanner', 1500, 350, true);
 }
 add_action('after_setup_theme', 'university_features');
 
 //This will only affect the event website checking to make sure it doesn't touch the admin site, and only the event archives page
 //Note that most of the keys and values are taken from the front-page.php homepageevents section
 function university_adjust_queries($query) {
+  //this if satement is for the program archive page
+  if (!is_admin() AND is_post_type_archive('program') AND is_main_query()) {
+    $query->set('orderby', 'title');
+    $query->set('order', 'ASC');
+    $query->set('posts_per_page', -1);
+  }
+  //this if statement is for the event archive page
   if (!is_admin() AND is_post_type_archive('event') AND $query->is_main_query()) {
     $today = date('Ymd');
     $query->set('meta_key', 'event_date');

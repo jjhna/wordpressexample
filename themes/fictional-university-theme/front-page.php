@@ -9,7 +9,7 @@
         <h1 class="headline headline--large">Welcome!</h1>
         <h2 class="headline headline--medium">We think you&rsquo;ll like it here.</h2>
         <h3 class="headline headline--small">Why don&rsquo;t you check out the <strong>major</strong> you&rsquo;re interested in?</h3>
-        <a href="#" class="btn btn--large btn--blue">Find Your Major</a>
+        <a href="<?php echo get_post_type_archive_link('program'); ?>" class="btn btn--large btn--blue">Find Your Major</a>
       </div>
     </div>
 
@@ -19,6 +19,7 @@
           <h2 class="headline headline--small-plus t-center">Upcoming Events</h2>
 
           <!-- posts the events by the most upcoming event date and hide previous events from the front page -->
+          <!-- This is a prime example of a custom query -->
           <?php 
             $today = date('Ymd');
             $homepageEvents = new WP_Query(array(
@@ -40,24 +41,8 @@
             ));
 
             while ($homepageEvents->have_posts()) {
-              $homepageEvents->the_post(); ?>
-              <div class="event-summary">
-                <a class="event-summary__date t-center" href="<?php the_permalink(); ?>">
-                  <span class="event-summary__month"><?php 
-                    $eventDate = new DateTime(get_field('event_date'));
-                    echo $eventDate->format('M')
-                   ?></span>
-                  <span class="event-summary__day"><?php 
-                    echo $eventDate->format('d')
-                   ?></span>
-                </a>
-                <div class="event-summary__content">
-                  <h5 class="event-summary__title headline headline--tiny"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h5>
-                  <p><?php if(has_excerpt()) { the_excerpt(); } else { echo wp_trim_words(get_the_content(), 1);  } ?> 
-                  <a href="<?php the_permalink(); ?>" class="nu gray">Learn more</a></p>
-                </div>
-              </div>
-              <?php
+              $homepageEvents->the_post();
+              get_template_part('template-parts/content', 'event');
             }
           ?>
 
