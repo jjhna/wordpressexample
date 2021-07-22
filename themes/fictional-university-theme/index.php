@@ -6,6 +6,7 @@ pageBanner(array(
   'subtitle' => 'Keep up with our latest news.'
 ));
  ?>
+     <!-- for more info on how the dates, times, button and excerpt works, look up the same methods on archive.php -->
 <div class="container container--narrow page-section">
 <?php
   while(have_posts()) {

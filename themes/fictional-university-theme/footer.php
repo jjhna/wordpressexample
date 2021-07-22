@@ -1,3 +1,4 @@
+<!-- This is the php file that is used for the footer -->
 <footer class="site-footer">
 
     <div class="site-footer__inner container container--narrow">
@@ -50,7 +51,9 @@
 
     </div>
   </footer>
-
+<!-- Pulls up the admin bar that you see on the top -->
+    <!-- This also pulls in the JS files, note even in regular web dev you place the JS context at the bottom so it doesn't slow down the 
+    loading of the webpage  -->
 <?php wp_footer(); ?>
 </body>
 </html>

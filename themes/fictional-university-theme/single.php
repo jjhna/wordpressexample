@@ -1,5 +1,5 @@
 <?php
-  
+  //<!-- This is the php file that is used for regular posts for wp -->
   get_header();
 
   while(have_posts()) {

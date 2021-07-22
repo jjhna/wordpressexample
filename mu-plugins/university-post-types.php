@@ -1,5 +1,8 @@
 <?php
-
+/* Used to make custom changes to the type posts. Make sure to go to admin page -> settings/peramlinks and click save changes after
+    making any changes below
+    Note that makin any changes below will provide the admin and other users to add/update/delete any posts with additional content
+    For example, removing the title from supports will remove the ability to type a title to a post */
 function university_post_types() {
   // Campus Post Type
   register_post_type('campus', array(
@@ -19,12 +22,14 @@ function university_post_types() {
   ));
   
   // Event Post Type
+  //the function register_post_type which takes in 2 arguments, 1st arg - post type, 2nd arg - an array of varaibles
   register_post_type('event', array(
-    'show_in_rest' => true,
-    'supports' => array('title', 'editor', 'excerpt'),
-    'rewrite' => array('slug' => 'events'),
-    'has_archive' => true,
-    'public' => true,
+    'show_in_rest' => true, // if you need to register a custom post using the REST API inside the wp/v2 namespace
+    'supports' => array('title', 'editor', 'excerpt'), //gives the user the ability to add a title, editor name and excerpt for each event
+    'rewrite' => array('slug' => 'events'), //slug - part of a URL of the website, which allows the slug to be rewritten as events
+    'has_archive' => true, //does it allow an archive page to group all similar events? then make it true
+    'public' => true, //publically available to the public
+    //adds in an array of labels to add or edit any events
     'labels' => array(
       'name' => 'Events',
       'add_new_item' => 'Add New Event',
@@ -32,13 +37,13 @@ function university_post_types() {
       'all_items' => 'All Events',
       'singular_name' => 'Event'
     ),
-    'menu_icon' => 'dashicons-calendar'
+    'menu_icon' => 'dashicons-calendar' //adds in a little menu icon for the calendar
   ));
 
   // Program Post Type
   register_post_type('program', array(
     'show_in_rest' => true,
-    'supports' => array('title', 'editor'),
+    'supports' => array('title'),
     'rewrite' => array('slug' => 'programs'),
     'has_archive' => true,
     'public' => true,
@@ -68,4 +73,7 @@ function university_post_types() {
   ));
 }
 
+/* adds a callback function to an action hook,
+init - runs after wp has finished loading but before any headers are sent
+so this adds the function university_post_types (from the top of this page) to be send to the action hook: init */
 add_action('init', 'university_post_types');

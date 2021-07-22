@@ -1,7 +1,20 @@
 <?php
 
+require get_theme_file_path('/inc/search-route.php');
+
+function university_custom_rest() {
+  register_rest_field('post', 'authorName', array(
+    'get_callback' => function() {return get_the_author();}
+  ));
+}
+
+add_action('rest_api_init', 'university_custom_rest');
+
+//function pageBanner takes in a argument $args but the default is null if nothing is entered
+// The function reduce the need for duplication and also provides a default fallback if no title,subtitle and photo is entered
 function pageBanner($args = NULL) {
-  
+  // php logic will live here
+  //if there isn't a title then the title will be taken from the post original admin title
   if (!$args['title']) {
     $args['title'] = get_the_title();
   }
@@ -30,22 +43,32 @@ function pageBanner($args = NULL) {
   </div>
 <?php }
 
+//function university files that contain the images, css, styles and other cdn 
 function university_files() {
+  // Enqueue (add an item of data to a queue of itesms awaiting processing) a bunch of scripts
+    // In this case the js file from the build folder with jquery added in
   wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=AIzaSyDin3iGCdZ7RPomFLyb2yqFERhs55dmfTI', NULL, '1.0', true);
+  //adds in the jquery and index.js file to the main-university-js function?
   wp_enqueue_script('main-university-js', get_theme_file_uri('/build/index.js'), array('jquery'), '1.0', true);
+    // Custom google fonts cdn
   wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+    // Font-awesome cdn
   wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+  //gets the css files
   wp_enqueue_style('university_main_styles', get_theme_file_uri('/build/style-index.css'));
+  //gets the css files
   wp_enqueue_style('university_extra_styles', get_theme_file_uri('/build/index.css'));
-
+  // /localizes a script by getting the site url and placing it into a varible called root_url
   wp_localize_script('main-university-js', 'universityData', array(
     'root_url' => get_site_url()
   ));
 
 }
 
+//hooks the university files to the enqueue_script 
 add_action('wp_enqueue_scripts', 'university_files');
 
+//A function that adds in the title tag when the header.php file is utilized
 function university_features() {
   add_theme_support('title-tag');
   add_theme_support('post-thumbnails');
@@ -56,22 +79,29 @@ function university_features() {
 
 add_action('after_setup_theme', 'university_features');
 
+//this function adjust the queiries by checking the post type and the main query
 function university_adjust_queries($query) {
+  //for example if it isn't the admin page and a campust post and if the query is the main query
+  // then return the all the posts with no post limit per page
   if (!is_admin() AND is_post_type_archive('campus') AND $query->is_main_query()) {
     $query->set('posts_per_page', -1);
   }
-
+  //this if satement is for the program archive page
+  //returns a query set ordered by its title by ascending and no post limit per page
   if (!is_admin() AND is_post_type_archive('program') AND $query->is_main_query()) {
     $query->set('orderby', 'title');
     $query->set('order', 'ASC');
     $query->set('posts_per_page', -1);
   }
-
+   //this if statement is for the event archive page
+   //returns a query set by its event date in ascending order BUT it also only shhows relevent dates
+   // that are after todays date so previous events aren't shown
   if (!is_admin() AND is_post_type_archive('event') AND $query->is_main_query()) {
     $today = date('Ymd');
     $query->set('meta_key', 'event_date');
     $query->set('orderby', 'meta_value_num');
     $query->set('order', 'ASC');
+    //compares the event date with todays date
     $query->set('meta_query', array(
               array(
                 'key' => 'event_date',
@@ -85,6 +115,7 @@ function university_adjust_queries($query) {
 
 add_action('pre_get_posts', 'university_adjust_queries');
 
+//ignore functions below
 function universityMapKey($api) {
   $api['key'] = 'yourKeyGoesHere';
   return $api;

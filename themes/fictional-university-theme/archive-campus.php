@@ -1,5 +1,5 @@
 <?php
-
+//Note that we won't be using this for our website due to the lack of a google map api (which we would have to pay)
 get_header();
 pageBanner(array(
   'title' => 'Our Campuses',
