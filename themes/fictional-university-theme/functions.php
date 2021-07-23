@@ -122,3 +122,60 @@ function universityMapKey($api) {
 }
 
 add_filter('acf/fields/google_map/api', 'universityMapKey');
+
+
+//Redirects subscriber accounts out of admin and onto homepage
+add_action('admin_init', 'redirectSubsToFrontend');
+//checks the users role to see if they are a subscriber then redirect them to the main page after logging in
+function redirectSubsToFrontend() {
+  $ourCurrentUser = wp_get_current_user(); //gets the current user
+  //checks the users role to see if they are a subscriber then redirect them to the main page after logging in
+  if (count($ourCurrentUser->roles) == 1 AND $ourCurrentUser->roles[0] == 'subscriber') {
+    wp_redirect(site_url('/'));
+    exit; // stops the php once it redirects someone
+  }
+}
+
+//Removes the admin bar for subscribers
+add_action('wp_loaded', 'noSubsAdminBar');
+//checks the users role to see if they are a subscriber then remove the admin bar
+function noSubsAdminBar() {
+  $ourCurrentUser = wp_get_current_user(); //gets the current user
+  //checks the users role to see if they are a subscriber then remove the admin bar
+  if (count($ourCurrentUser->roles) == 1 AND $ourCurrentUser->roles[0] == 'subscriber') {
+    show_admin_bar(false); //admin bar isn't shown to subscriber
+  }
+}
+
+//Customize Login Screen
+//So if the user clicks on the W logo on the WP site then it will redirect the user to our university homepage
+add_filter('login_headerurl', 'ourHeaderUrl');
+
+function ourHeaderUrl() {
+  return esc_url(site_url('/'));
+}
+
+/* This tells WP to change the logo image
+note that can't change the logo but we can tell WP to change the logo image
+also note that if you want to change any of the login theme, color, font and logo
+you can change and access it in the login.scss */
+add_action('login_enqueue_scripts', 'ourLoginCSS');
+
+function ourLoginCSS() {
+  // Custom google fonts cdn
+  wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+    // Font-awesome cdn
+  wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+  //gets the css files
+  wp_enqueue_style('university_main_styles', get_theme_file_uri('/build/style-index.css'));
+  //gets the css files
+  wp_enqueue_style('university_extra_styles', get_theme_file_uri('/build/index.css'));
+}
+
+//Removes the "Powered by Wordpress" logo and wording to be replaced with the project name
+//Note that the project name I previously created is: "wordpress-example" which is completely different
+add_filter('login_headertitle', 'ourLoginTitle');
+
+function ourLoginTitle() {
+  return get_bloginfo('name');
+}

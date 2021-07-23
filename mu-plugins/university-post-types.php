@@ -1,11 +1,14 @@
 <?php
-/* Used to make custom changes to the type posts. Make sure to go to admin page -> settings/peramlinks and click save changes after
+/* Note: MU - stand for must use, it's a plugin that tells WP that they must use this custom type plugin
+    Used to make custom changes to the type posts. Make sure to go to admin page -> settings/peramlinks and click save changes after
     making any changes below
     Note that makin any changes below will provide the admin and other users to add/update/delete any posts with additional content
     For example, removing the title from supports will remove the ability to type a title to a post */
 function university_post_types() {
   // Campus Post Type
   register_post_type('campus', array(
+    'capability_type' => 'campus',
+    'map_meta_cap' => true,
     'show_in_rest' => true,
     'supports' => array('title', 'editor', 'excerpt'),
     'rewrite' => array('slug' => 'campuses'),
@@ -24,6 +27,9 @@ function university_post_types() {
   // Event Post Type
   //the function register_post_type which takes in 2 arguments, 1st arg - post type, 2nd arg - an array of varaibles
   register_post_type('event', array(
+    //note: capability_type & map_meta_cap allows us to see the events for roles in the member section on the admin site
+    'capability_type' => 'event', //post by timepost, grants custom permission to certain roles
+    'map_meta_cap' => true, // hey wp can you require the right permission at the right time?
     'show_in_rest' => true, // if you need to register a custom post using the REST API inside the wp/v2 namespace
     'supports' => array('title', 'editor', 'excerpt'), //gives the user the ability to add a title, editor name and excerpt for each event
     'rewrite' => array('slug' => 'events'), //slug - part of a URL of the website, which allows the slug to be rewritten as events

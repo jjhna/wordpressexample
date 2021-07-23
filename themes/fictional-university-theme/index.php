@@ -1,5 +1,5 @@
 <?php
-
+//the index.php page is the default page use by posts 
 get_header();
 pageBanner(array(
   'title' => 'Welcome to our blog!',
