@@ -77,6 +77,24 @@ function university_post_types() {
     ),
     'menu_icon' => 'dashicons-welcome-learn-more'
   ));
+
+  // Note Post Type
+  register_post_type('note', array(
+    'capability_type' => 'note', //We want to grant permissions to certain users on using the note feature
+    'map_meta_cap' => true, // hey wp can you require the right permission at the right time?
+    'show_in_rest' => true,
+    'supports' => array('title', 'editor'),
+    'public' => false, //because we want our notes to be private only if the user is logged in
+    'show_ui' => true, //but we still want these features to be shown in the front page
+    'labels' => array(
+      'name' => 'Notes',
+      'add_new_item' => 'Add New Note',
+      'edit_item' => 'Edit Note',
+      'all_items' => 'All Note',
+      'singular_name' => 'Note'
+    ),
+    'menu_icon' => 'dashicons-welcome-write-blog'
+  ));
 }
 
 /* adds a callback function to an action hook,

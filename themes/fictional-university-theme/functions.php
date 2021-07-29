@@ -6,6 +6,11 @@ function university_custom_rest() {
   register_rest_field('post', 'authorName', array(
     'get_callback' => function() {return get_the_author();}
   ));
+
+  //This is used in the MyNotes.js so that the delete note button will remove the warning limit
+  register_rest_field('note', 'userNoteCount', array(
+    'get_callback' => function() {return count_user_posts(get_current_user_id(), 'note');}
+  ));
 }
 
 add_action('rest_api_init', 'university_custom_rest');
@@ -60,7 +65,8 @@ function university_files() {
   wp_enqueue_style('university_extra_styles', get_theme_file_uri('/build/index.css'));
   // /localizes a script by getting the site url and placing it into a varible called root_url
   wp_localize_script('main-university-js', 'universityData', array(
-    'root_url' => get_site_url()
+    'root_url' => get_site_url(),
+    'nonce' => wp_create_nonce('wp_rest')
   ));
 
 }
@@ -178,4 +184,33 @@ add_filter('login_headertitle', 'ourLoginTitle');
 
 function ourLoginTitle() {
   return get_bloginfo('name');
+}
+
+//Force note posts to be private
+//These functions act as a filter, so WP can filter out any of the data being sent to word press will run through a function
+//note: the 3rd parameter is the priority level just in case you need to use multiple usages of wp_insert_post_data
+//the 4th parameter means that the function should take in 2 parameters: $data and $postarr
+add_filter('wp_insert_post_data', 'makeNotePrivate', 10, 2);
+
+//IMPORTANT NOTE: After changing the MyNotes.js from Jquery to pure JS the die error message no longer appears but everything else still works
+//The $data is the data that needs to be filtered and in this case the notes that need to become private
+function makeNotePrivate($data, $postarr) {
+  //We need to make sure the post type is a note
+  if ($data['post_type'] == 'note') {
+    //Say if we want to limit the amount of notes that a user can make, so we want to limit 5 notes
+    //and we want to avoid using this if statement if the post does have an ID
+    if (count_user_posts(get_current_user_id(), 'note') > 4 AND !$postarr['ID']) {
+      die("You have reached your note limit"); //die prevents any of the code below to be run/used
+    }
+    
+    //We want to ensure that wp doesn't allow any post to contain html tags we need to filter the data using sanitize
+    $data['post_content'] = sanitize_textarea_field($data['post_content']);
+    $data['post_title'] = sanitize_textarea_field($data['post_title']);
+  }
+
+  //Note we need to make sure that the data we want to filter out isn't in the trash and is a note type
+  if ($data['post_type'] == 'note' AND $data['post_status'] != 'trash') {
+    $data['post_status'] = "private";
+  }
+  return $data;
 }

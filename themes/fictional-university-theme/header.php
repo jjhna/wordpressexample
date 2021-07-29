@@ -28,6 +28,7 @@
         <div class="site-header__util">
           <!-- checks to see if user is logged in, if so then log out button shows, otherwise sign up and log in button will show -->
           <?php if(is_user_logged_in()) { ?>
+            <a href="<?php echo esc_url(site_url('/my-notes')); ?>" class="btn btn--small btn--orange float-left push-right">My Notes</a>
             <a href="<?php echo wp_logout_url(); ?>" class="btn btn--small  btn--dark-orange float-left btn--with-photo">
             <!-- Gets the avatar image and attaches it to the log out button, also uses gravitar - globally recognized avatar -->
             <span class="site-header__avatar"><?php echo get_avatar(get_current_user_id(), 60); ?></span>
