@@ -95,6 +95,21 @@ function university_post_types() {
     ),
     'menu_icon' => 'dashicons-welcome-write-blog'
   ));
+
+  // Like Post Type
+  register_post_type('like', array(
+    'supports' => array('title'),
+    'public' => false, //because we want our notes to be private only if the user is logged in
+    'show_ui' => true, //but we still want these features to be shown in the front page
+    'labels' => array(
+      'name' => 'Likes',
+      'add_new_item' => 'Add New Like',
+      'edit_item' => 'Edit Like',
+      'all_items' => 'All Likes',
+      'singular_name' => 'Like'
+    ),
+    'menu_icon' => 'dashicons-heart'
+  ));
 }
 
 /* adds a callback function to an action hook,

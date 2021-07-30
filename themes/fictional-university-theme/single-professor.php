@@ -18,6 +18,54 @@
           </div>
 
           <div class="two-thirds">
+            <?php 
+              //The majority of the content below contains the html and php for the like button content
+              $likeCount = new WP_Query(array(
+                'post_type' => 'like',
+                'meta_query' => array(
+                  //Check to see if the professor id matches the search, if so then we can caluclate the number of likes
+                  //and return it to show the number of likes on a professor
+                  array(
+                    'key' => 'liked_professor_id',
+                    'compare' => '=',
+                    'value' => get_the_ID()
+                  )
+                )
+              ));
+
+              $existStatus = 'no';
+
+              //makes sure to check to see if the user is logged in, if so then we can see the heart symbol filled in
+              if (is_user_logged_in()) {
+                $existQuery = new WP_Query(array(
+                  'author' => get_current_user_id(),
+                  'post_type' => 'like',
+                  //Check to see if the professor id matches the search, if so then we can caluclate the number of likes
+                  //and return it to show the number of likes on a professor
+                  'meta_query' => array(
+                    array(
+                      'key' => 'liked_professor_id',
+                      'compare' => '=',
+                      'value' => get_the_ID()
+                    )
+                  )
+                ));
+              
+                //if the post exist in the query then the status turns into yes, this variable is primarily used
+                //in the data-exists="<?php echo $existStatus; >
+                if ($existQuery->found_posts) {
+                  $existStatus = 'yes';
+                }
+              }
+
+            ?>
+            <!-- this is the feature for the heart and like emojis -->
+            <span class="like-box" data-like="<?php echo $existQuery->posts[0]->ID; ?>" data-professor="<?php the_ID(); ?>" data-exists="<?php echo $existStatus; ?>">
+              <i class="fa fa-heart-o" aria-hidden="true"></i>
+              <i class="fa fa-heart" aria-hidden="true"></i>
+              <span class="like-count"><?php echo $likeCount->found_posts; ?></span>
+            </span>
+
             <?php the_content(); ?>
           </div>
 
